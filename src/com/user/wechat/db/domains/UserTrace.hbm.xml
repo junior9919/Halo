@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 2015-10-24 19:20:23 by Hibernate Tools 3.4.0.CR1 -->
+<hibernate-mapping>
+    <class name="com.user.wechat.db.domains.UserTrace" table="user_trace" catalog="halo_wechat">
+        <id name="id" type="java.lang.Integer">
+            <column name="id" />
+            <generator class="identity" />
+        </id>
+        <property name="openId" type="string">
+            <column name="open_id" length="32" not-null="true">
+                <comment>
+                &#211;&#195;&#187;&#167;&#181;&#196;&#177;&#234;&#202;&#182;&#163;&#172;&#182;&#212;&#181;&#177;&#199;&#176;&#185;&#171;&#214;&#218;&#186;&#197;&#206;&#168;&#210;&#187;</comment>
+            </column>
+        </property>
+        <property name="latitude" type="big_decimal">
+            <column name="latitude" precision="10" scale="7" not-null="true">
+                <comment>&#181;&#216;&#192;&#237;&#206;&#187;&#214;&#195;&#206;&#179;&#182;&#200;</comment>
+            </column>
+        </property>
+        <property name="longitude" type="big_decimal">
+            <column name="longitude" precision="10" scale="7" not-null="true">
+                <comment>&#181;&#216;&#192;&#237;&#206;&#187;&#214;&#195;&#190;&#173;&#182;&#200;</comment>
+            </column>
+        </property>
+        <property name="prcsn" type="big_decimal">
+            <column name="prcsn" precision="10" scale="7">
+                <comment>&#181;&#216;&#192;&#237;&#206;&#187;&#214;&#195;&#190;&#171;&#182;&#200;</comment>
+            </column>
+        </property>
+        <property name="scale" type="java.lang.Integer">
+            <column name="scale" precision="7" scale="0">
+                <comment>&#181;&#216;&#205;&#188;&#203;&#245;&#183;&#197;&#180;&#243;&#208;&#161;</comment>
+            </column>
+        </property>
+        <property name="label" type="string">
+            <column name="label" length="50">
+                <comment>&#181;&#216;&#192;&#237;&#206;&#187;&#214;&#195;&#208;&#197;&#207;&#162;</comment>
+            </column>
+        </property>
+        <property name="recordTime" type="timestamp">
+            <column name="record_time" length="19" not-null="true" unique="true">
+                <comment>&#201;&#207;&#177;&#168;&#202;&#177;&#188;&#228;</comment>
+            </column>
+        </property>
+    </class>
+</hibernate-mapping>

@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://www.springframework.org/schema/beans" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+						http://www.springframework.org/schema/beans/spring-beans-3.0.xsd 
+						http://www.springframework.org/schema/tx 
+						http://www.springframework.org/schema/tx/spring-tx.xsd 
+						http://www.springframework.org/schema/aop 
+						http://www.springframework.org/schema/aop/spring-aop.xsd">
+	<!-- 国际化字符支持 -->
+	<bean id="messageSource"
+		class="org.springframework.context.support.ResourceBundleMessageSource">
+		<property name="basenames">
+			<list>
+				<value>
+					resources
+				</value>
+			</list>
+		</property>
+	</bean>
+	<!-- 数据源和会话工厂配置 -->
+	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource"
+		destroy-method="close">
+		<property name="driverClass" value="com.mysql.jdbc.Driver" />
+		<property name="jdbcUrl" value="jdbc:mysql://115.159.67.204/halo_wechat" />
+		<property name="user" value="root" />
+		<property name="password" value="rem^eMber06" />
+		<property name="maxPoolSize" value="40" />
+		<property name="minPoolSize" value="1" />
+		<property name="initialPoolSize" value="1" />
+		<property name="maxIdleTime" value="60" />
+	</bean>
+	<bean id="sessionFactory"
+		class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<property name="mappingResources">
+			<list>
+				<value>com/user/wechat/db/domains/UserInfo.hbm.xml</value>
+				<value>com/user/wechat/db/domains/DeveloperInfo.hbm.xml</value>
+				<value>com/user/wechat/db/domains/TempDeveloperInfo.hbm.xml</value>
+				<value>com/user/wechat/db/domains/UserTrace.hbm.xml</value>
+				<value>com/user/wechat/db/domains/UnscribedUserInfo.hbm.xml</value>
+				<value>com/user/wechat/db/domains/ArticleCatalog.hbm.xml</value>
+			</list>
+		</property>
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">org.hibernate.dialect.MySQLInnoDBDialect</prop>
+				<prop key="hibernate.hbm2ddl.auto">update</prop>
+			</props>
+		</property>
+	</bean>
+	<!-- 事物管理配置 -->
+	<bean id="transactionManager"
+		class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+		<property name="sessionFactory" ref="sessionFactory">
+		</property>
+	</bean>
+	<tx:advice id="transactionAdvice" transaction-manager="transactionManager">
+		<tx:attributes>
+			<tx:method name="save*" propagation="REQUIRED" />
+			<tx:method name="read*" read-only="true" />
+			<tx:method name="list*" read-only="true" />
+			<tx:method name="delete*" propagation="REQUIRED" />
+			<tx:method name="modify*" propagation="REQUIRED" />
+			<tx:method name="*" propagation="REQUIRED" />
+		</tx:attributes>
+	</tx:advice>
+	<aop:config>
+		<aop:pointcut expression="execution(* com.user.wechat.mvc.services..*(..))"
+			id="bussPointcut" />
+		<aop:pointcut expression="execution(* com.user.wechat.processors..*(..))"
+			id="procPointcut" />
+		<aop:advisor advice-ref="transactionAdvice" pointcut-ref="bussPointcut" />
+		<aop:advisor advice-ref="transactionAdvice" pointcut-ref="procPointcut" />
+	</aop:config>
+	<!-- 菜单事件处理器配置 -->
+	<bean id="tipResponser" class="com.user.wechat.responsers.TipResponser" />
+	<bean id="techArticleResponser" class="com.user.wechat.responsers.TechArticleResponser" />
+	<bean id="keyResponserBuilder" class="com.user.wechat.responsers.KeyResponserBuilder">
+		<property name="responsers">
+			<list>
+				<ref bean="tipResponser" />
+				<ref bean="techArticleResponser" />
+			</list>
+		</property>
+	</bean>
+	<!-- 消息和事件处理器配置 -->
+	<bean id="text_message_processor" class="com.user.wechat.processors.TextMessageProcessor" />
+	<bean id="location_message_processor" class="com.user.wechat.processors.LocationMessageProcessor" />
+	<bean id="scan_event_processor" class="com.user.wechat.processors.ScanEventProcessor" />
+	<bean id="location_event_processor" class="com.user.wechat.processors.LocationEventProcessor" />
+	<bean id="subscribe_event_processor" class="com.user.wechat.processors.SubscribeEventProcessor" />
+	<bean id="unsubscribe_event_processor" class="com.user.wechat.processors.UnsubscribeEventProcessor" />
+	<bean id="click_event_processor" class="com.user.wechat.processors.ClickEventProcessor" />
+</beans>

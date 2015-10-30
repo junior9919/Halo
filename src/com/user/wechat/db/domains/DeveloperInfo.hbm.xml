@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 2015-9-19 11:11:39 by Hibernate Tools 3.4.0.CR1 -->
+<hibernate-mapping>
+    <class name="com.user.wechat.db.domains.DeveloperInfo" table="developer_info" catalog="halo_wechat">
+        <id name="id" type="java.lang.Integer">
+            <column name="id" />
+            <generator class="identity" />
+        </id>
+        <property name="userInfoId" type="int">
+            <column name="user_info_id" not-null="true">
+                <comment>&#211;&#195;&#187;&#167;&#187;&#249;&#177;&#190;&#208;&#197;&#207;&#162;&#208;&#242;&#186;&#197;</comment>
+            </column>
+        </property>
+        <property name="developerId" type="string">
+            <column name="developer_id" length="20" not-null="true" unique="true">
+                <comment>&#191;&#170;&#183;&#162;&#213;&#223;&#206;&#162;&#208;&#197;&#186;&#197;</comment>
+            </column>
+        </property>
+        <property name="registTime" type="timestamp">
+            <column name="regist_time" length="19" not-null="true">
+                <comment>&#215;&#162;&#178;&#225;&#202;&#177;&#188;&#228;</comment>
+            </column>
+        </property>
+    </class>
+</hibernate-mapping>
