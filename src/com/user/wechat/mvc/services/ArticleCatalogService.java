@@ -3,7 +3,7 @@
  */
 package com.user.wechat.mvc.services;
 
-import com.halo.wechat.messages.NewsMessage;
+import com.halo.wechat.messages.Message;
 
 /**
  * @author Junior
@@ -14,6 +14,6 @@ import com.halo.wechat.messages.NewsMessage;
  */
 public interface ArticleCatalogService {
 
-	public NewsMessage getRecentNews(String toUserName, String fromUserName);
+	public Message getRecentNews(String toUserName, String fromUserName);
 
 }
