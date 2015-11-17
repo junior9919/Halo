@@ -5,12 +5,15 @@ package com.user.wechat.mvc.services.impl;
 
 import java.io.File;
 import java.util.Date;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.halo.spring.utils.SpringUtils;
 import com.halo.wechat.capabilities.CapabilityException;
 import com.halo.wechat.capabilities.abilities.MaterialAbility;
+import com.halo.wechat.capabilities.beans.Item;
 import com.halo.wechat.capabilities.beans.MaterialCountBean;
 import com.halo.wechat.capabilities.beans.MaterialListBean;
 import com.halo.wechat.capabilities.beans.NewsItem;
@@ -32,7 +35,7 @@ public class MaterialServiceImpl implements MaterialService {
 	@Autowired
 	private ArticleCatalogDao articleCatalogDao;
 
-	private final String DEFAULT_THUMB_IMG_URL = "http://115.159.67.204/WeChat/images/dog_eye_on_design_thumb.jpg";
+	private final String DEFAULT_THUMB_IMG_URL = "https://mmbiz.qlogo.cn/mmbiz/eicRhDEVwZibM8rVfRXkIHpiao8WsqjvOvg4I535lGMlgzJVBNFSwoq2krkkPHc09VYn9Bfv0F3LsLE0hutwIFwMA/0?wx_fmt=jpeg";
 
 	@Override
 	public String saveNewsToLocal(short materialCount) throws ServiceException {
@@ -44,8 +47,9 @@ public class MaterialServiceImpl implements MaterialService {
 			throw new ServiceException("Get material count error.");
 		}
 
-		short count = materialCountBean.getNews_count() > materialCount ? materialCount : materialCountBean.getNews_count();
-		short offset = (short) (materialCountBean.getNews_count() > materialCount ? materialCountBean.getNews_count() - materialCount : 0);
+		short count = materialCountBean.getNews_count() > materialCount ? materialCount
+				: materialCountBean.getNews_count();
+		short offset = 0;
 
 		if (0 == count) {
 			return "没有永久素材可下载。";
@@ -59,22 +63,29 @@ public class MaterialServiceImpl implements MaterialService {
 		}
 
 		String savedRecord = "<table><th colspan='4'>共下载" + String.valueOf(count) + "条素材</th>";
-		for (MaterialListBean.Item item : materialListBean.getItem()) {
-			for (NewsItem newsItem : item.getContent().getNews_item()) {
+
+		List<Item> items = materialListBean.getItem();
+		for (int i = 0; i < items.size(); i++) {
+			Item item = items.get(i);
+			List<NewsItem> newsItems = item.getContent().getNews_item();
+			for (int j = 0; j < newsItems.size(); j++) {
+				NewsItem newsItem = newsItems.get(j);
+
 				File bigPicFile;
 				try {
 					bigPicFile = materialAbility.downloadMaterial(newsItem.getThumb_media_id());
 				} catch (CapabilityException e) {
 					throw new ServiceException("Download cover picture error.");
 				}
-				String saveAsPath = SpringUtils.getWebApplicationContext().getServletContext().getRealPath("image/");
+				String saveAsPath = SpringUtils.getWebApplicationContext().getServletContext().getRealPath("images/");
 				String saveAsFileName = newsItem.getThumb_media_id() + ".jpg";
 				File saveAsFile = new File(saveAsPath + File.separator + saveAsFileName);
 				bigPicFile.renameTo(saveAsFile);
 
 				String bigPicUrl = "http://115.159.67.204/WeChat/images/" + saveAsFileName;
-				ArticleCatalog articleCatalog = new ArticleCatalog(newsItem.getTitle(), newsItem.getDigest(), bigPicUrl, DEFAULT_THUMB_IMG_URL,
-						newsItem.getUrl(), new Date());
+
+				ArticleCatalog articleCatalog = new ArticleCatalog(newsItem.getTitle(), newsItem.getDigest(), bigPicUrl,
+						DEFAULT_THUMB_IMG_URL, newsItem.getUrl(), new Date());
 				Integer id = articleCatalogDao.save(articleCatalog);
 
 				savedRecord += "<tr>";

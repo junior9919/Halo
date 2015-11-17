@@ -23,7 +23,7 @@
 	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource"
 		destroy-method="close">
 		<property name="driverClass" value="com.mysql.jdbc.Driver" />
-		<property name="jdbcUrl" value="jdbc:mysql://115.159.67.204/halo_wechat" />
+		<property name="jdbcUrl" value="jdbc:mysql://115.159.67.204/halo_wechat?useUnicode=true&amp;characterEncoding=utf-8" />
 		<property name="user" value="root" />
 		<property name="password" value="rem^eMber06" />
 		<property name="maxPoolSize" value="40" />
