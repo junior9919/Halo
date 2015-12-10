@@ -4,12 +4,13 @@
 package com.user.wechat.mvc.services.impl;
 
 import java.sql.Timestamp;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import com.halo.spring.utils.SpringUtils;
 import com.halo.wechat.messages.Message;
 import com.halo.wechat.messages.MsgType;
@@ -74,6 +75,24 @@ public class ArticleCatalogServiceImpl implements ArticleCatalogService {
 
 			return message;
 		}
+	}
+
+	@Override
+	public long getArticlesCount() {
+		return articleCatalogDao.getArticlesCount();
+	}
+
+	@Override
+	public List<Map<String, String>> searchArticles(int firstRow, int totalRow) {
+		List<ArticleCatalog> articles = articleCatalogDao.findArticles(firstRow, totalRow);
+		List<Map<String, String>> results = new LinkedList<Map<String, String>>();
+		for (ArticleCatalog articleCatalog : articles) {
+			Map<String, String> article = new HashMap<String, String>();
+			article.put("url", articleCatalog.getUrl());
+			article.put("title", articleCatalog.getTitle());
+			results.add(article);
+		}
+		return results;
 	}
 
 }

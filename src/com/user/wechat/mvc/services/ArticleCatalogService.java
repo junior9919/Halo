@@ -3,6 +3,9 @@
  */
 package com.user.wechat.mvc.services;
 
+import java.util.List;
+import java.util.Map;
+
 import com.halo.wechat.messages.Message;
 
 /**
@@ -15,5 +18,9 @@ import com.halo.wechat.messages.Message;
 public interface ArticleCatalogService {
 
 	public Message getRecentNews(String toUserName, String fromUserName);
+	
+	public long getArticlesCount();
+
+	public List<Map<String, String>> searchArticles(int firstRow, int totalRow);
 
 }
